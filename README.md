@@ -14,15 +14,24 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk synth`       emits the synthesized CloudFormation template
 
 # Local
-1. install dependencies
+
+1. Clone module to your CDK
+
 ```bash
-npx @puppeteer/browsers install chromium@latest --path /tmp/localChromium
+git clone https://github.com/rv-rescala/jp-serverless-puppeteer
 ```
 
-2. Set env
+2. Install
+
+```bash
+./jp-serverless-puppeteer/install.sh
+# add "esModuleInterop": true," to your tsconfig.json
+```
+
+3. Set env
 ```bash
 export IS_LOCAL=true    
-export BROWSER_PATH=/tmp/localChromium/chromium/mac_arm-1151547/chrome-mac/Chromium.app/Contents/MacOS/Chromium 
+export BROWSER_PATH=/tmp/localChromium/chromium/mac_arm-1151547/chrome-mac/Chromium.app/Contents/MacOS/Chromium # chack your path
 ```
 
 3. Excute test
@@ -32,4 +41,4 @@ npx ts-node test/test-browser.ts
 
 # Reference
 - [puppeteer-aws-lambda](https://www.cloudtechsimplified.com/puppeteer-aws-lambda/)
-- [](https://github.com/Sparticuz/chromium)
+- [@sparticuz/chromium](https://github.com/Sparticuz/chromium)
