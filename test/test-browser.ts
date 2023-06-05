@@ -1,4 +1,4 @@
-import { getBrowser } from "../serverless-puppeter-lambda/browser";
+import { getBrowser } from "../lambda/browser";
 
 async function fetchData(): Promise<void> {
     const browser = await getBrowser();

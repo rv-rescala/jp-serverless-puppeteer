@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "init": "git clone --depth=1 https://github.com/sparticuz/chromium.git && cd chromium && make chromium.zip"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
@@ -21,7 +22,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-s3-deployment": "^1.203.0",
-    "@sparticuz/chromium": "^109.0.5",
+    "@sparticuz/chromium": "^109.0.6",
     "aws-cdk-lib": "2.73.0",
     "constructs": "^10.0.0",
     "puppeteer-core": "19.4",

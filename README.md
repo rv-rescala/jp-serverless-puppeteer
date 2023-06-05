@@ -15,23 +15,36 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 # Local
 
-1. Clone module to your CDK
+1. Install
 
 ```bash
 git clone https://github.com/rv-rescala/jp-serverless-puppeteer
+npx @puppeteer/browsers install chromium@latest --path /tmp/localChromium
+npm install @sparticuz/chromium@109 puppeteer-core@19.4
+npm run init
 ```
 
-2. Install
+! If you faced "Export assignment cannot be used when targeting ECMAScript modules. Consider using 'export default' or another module format instead. 75 export = LambdaFS;", Please edit chronium/tsconfig.json and add 
 
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true
+  }
+}
+```
+
+After that, please execute
 ```bash
-./jp-serverless-puppeteer/install.sh
-# add "esModuleInterop": true," to your tsconfig.json
+cd chromium && make chromium.zip
 ```
 
-3. Set env
+2. Set env
+
 ```bash
 export IS_LOCAL=true    
-export BROWSER_PATH=/tmp/localChromium/chromium/mac_arm-1151547/chrome-mac/Chromium.app/Contents/MacOS/Chromium # chack your path
+export BROWSER_PATH=/tmp/localChromium/chromium/mac_arm-1153064/chrome-mac/Chromium.app/Contents/MacOS/Chromium # chack your path
 ```
 
 3. Excute test
