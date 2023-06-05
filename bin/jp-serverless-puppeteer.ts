@@ -20,12 +20,11 @@ export function createServerlessPuppeterStack(app: App) {
                 NODE_ENV: 'production',
             },
             bundling: {
-                minify: true,
+                minify: false,
                 sourceMap: true,
                 forceDockerBundling: false,
-                environment: {
-                    NODE_ENV: 'production',
-                },
+                externalModules: ['aws-sdk',  '@sparticuz/chromium'],
+                nodeModules: ['puppeteer-core']
             },
         },
     ];

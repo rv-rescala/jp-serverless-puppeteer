@@ -40,23 +40,13 @@ export class LambdaStack extends Stack {
         this.lambdaFunctions = this.props.functions.map((lambdaProps: LambdaProps) => {
             return new lambdaNodejs.NodejsFunction(this, `${this.props.resourcesPrefix}${lambdaProps.name}`, {
                 functionName: `${this.props.resourcesPrefix}-${lambdaProps.name}`,
-                environment: {
-                    ...lambdaProps.environment
-                },
                 runtime: lambda.Runtime.NODEJS_18_X,
                 timeout: Duration.seconds(60),
                 handler: 'main',
                 entry: lambdaProps.handlerPath,
                 memorySize: lambdaProps.memorySize,
-                tracing: lambda.Tracing.ACTIVE,
-                currentVersionOptions: {
-                    removalPolicy: RemovalPolicy.RETAIN,
-                    retryAttempts: 2,
-                },
-                ...(lambdaProps.bundling && {
-                    bundling: lambdaProps.bundling,
-                }),
                 layers: lambdaProps.layers,
+                bundling: lambdaProps.bundling
             });
         });
     }

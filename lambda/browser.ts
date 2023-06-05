@@ -1,8 +1,8 @@
 import { Browser } from "puppeteer-core";
 import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
 
 export async function getBrowser(): Promise<Browser> {
+    const chromium = require("@sparticuz/chromium");
     console.log("Launching browser");
     console.log("IS_LOCAL: " + process.env.IS_LOCAL);
     console.log("BROWSER_PATH: " + process.env.BROWSER_PATH);
@@ -12,7 +12,7 @@ export async function getBrowser(): Promise<Browser> {
     console.log("ExecutablePath: " + executablePath);
 
     const browser = await puppeteer.launch({
-        args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
+        args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
         defaultViewport: chromium.defaultViewport,
         executablePath: executablePath,
         ignoreHTTPSErrors: true
