@@ -7,26 +7,28 @@ import {
     aws_lambda as lambda,
     aws_lambda_nodejs as lambdaNodejs,
 } from 'aws-cdk-lib'
-import { aws_ec2 } from "aws-cdk-lib"
-import { join } from 'path'
 import * as cdk from "aws-cdk-lib";
-import * as fs from 'fs';
-import * as path from 'path';
+
+
+export interface LambdaProps {
+    name: string,
+    handlerPath: string
+    memorySize: number
+    useWarmUp: number
+    policies?: iam.PolicyStatementProps[]
+    bundling?: lambdaNodejs.BundlingOptions
+    environment?: {}
+    layers?: lambda.ILayerVersion[]
+}
 
 export interface LambdaStackProps extends cdk.StackProps {
     resourcesPrefix: string
-    function: {
-        handlerPath: string
-        memorySize: number
-        useWarmUp: number
-        policies?: iam.PolicyStatementProps[]
-        bundling?: lambdaNodejs.BundlingOptions
-        environment?: {}
-    }
+    functions: LambdaProps[] 
 }
 
 export class LambdaStack extends Stack {
     private props: LambdaStackProps
+    public lambdaFunctions: lambdaNodejs.NodejsFunction[]
 
     constructor(scope: Construct, id: string, props: LambdaStackProps) {
         super(scope, id, props)
@@ -35,25 +37,27 @@ export class LambdaStack extends Stack {
     }
 
     createLambda() {
-        // create lambda function datasource
-        new lambdaNodejs.NodejsFunction(this, `${this.props.resourcesPrefix}PrismaFn`, {
-            functionName: `${this.props.resourcesPrefix}_prisma_fn`,
-            environment: {
-                ...this.props.function.environment
-            },
-            runtime: lambda.Runtime.NODEJS_18_X,
-            timeout: Duration.seconds(60),
-            handler: 'main',
-            entry: join(this.props.function.handlerPath, 'test-capture.ts'),
-            memorySize: this.props.function.memorySize,
-            tracing: lambda.Tracing.ACTIVE,
-            currentVersionOptions: {
-                removalPolicy: RemovalPolicy.RETAIN,
-                retryAttempts: 2,
-            },
-            ...(this.props.function.bundling && {
-                bundling: this.props.function.bundling,
-            }),
+        this.lambdaFunctions = this.props.functions.map((lambdaProps: LambdaProps) => {
+            return new lambdaNodejs.NodejsFunction(this, `${this.props.resourcesPrefix}${lambdaProps.name}`, {
+                functionName: `${this.props.resourcesPrefix}-${lambdaProps.name}`,
+                environment: {
+                    ...lambdaProps.environment
+                },
+                runtime: lambda.Runtime.NODEJS_18_X,
+                timeout: Duration.seconds(60),
+                handler: 'main',
+                entry: lambdaProps.handlerPath,
+                memorySize: lambdaProps.memorySize,
+                tracing: lambda.Tracing.ACTIVE,
+                currentVersionOptions: {
+                    removalPolicy: RemovalPolicy.RETAIN,
+                    retryAttempts: 2,
+                },
+                ...(lambdaProps.bundling && {
+                    bundling: lambdaProps.bundling,
+                }),
+                layers: lambdaProps.layers,
+            });
         });
     }
 }
