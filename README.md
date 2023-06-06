@@ -1,6 +1,9 @@
-# Welcome to your CDK TypeScript project
+# Serverless Puppeteer on AWS Lambda
 
-This is a blank project for CDK development with TypeScript.
+This is a project for running Puppeteer on AWS Lambda and its Japanese Language Pack support.
+It is deployed using AWS CDK and the Lambda function is written in TypeScript.
+
+- [Japanese](https://qiita.com/roundv/items/04220351f8e9d1523020)
 
 # Installation
 
@@ -20,7 +23,7 @@ export IS_LOCAL=true
 export BROWSER_PATH=/tmp/localChromium/chromium/mac_arm-1153064/chrome-mac/Chromium.app/Contents/MacOS/Chromium # chack your path
 ```
 
-## Excute Local Test
+## Execute Local Test
 
 ```bash
 npx ts-node test/test-browser.ts
@@ -32,6 +35,10 @@ npx ts-node test/test-browser.ts
 cdk synth --all
 cdk deploy --all
 ```
+
+## Run Lambda
+
+Please run "jp-serverless-puppeteer-test-puppeteer-handler" on Lambda console.
 
 # Reference
 - [puppeteer-aws-lambda](https://www.cloudtechsimplified.com/puppeteer-aws-lambda/)
