@@ -23,6 +23,7 @@
     "@aws-cdk/aws-s3-deployment": "^1.203.0",
     "@sparticuz/chromium": "^109.0.6",
     "aws-cdk-lib": "2.73.0",
+    "aws-sdk": "^2.1391.0",
     "constructs": "^10.0.0",
     "puppeteer-core": "19.4",
     "source-map-support": "^0.5.21"

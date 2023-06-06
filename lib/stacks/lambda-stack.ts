@@ -15,15 +15,15 @@ export interface LambdaProps {
     handlerPath: string
     memorySize: number
     useWarmUp: number
-    policies?: iam.PolicyStatementProps[]
     bundling?: lambdaNodejs.BundlingOptions
     environment?: {}
     layers?: lambda.ILayerVersion[]
+    policySatements?: iam.PolicyStatement[]
 }
 
 export interface LambdaStackProps extends cdk.StackProps {
-    resourcesPrefix: string
-    functions: LambdaProps[] 
+    resourcesPrefix: string,
+    functions: LambdaProps[],
 }
 
 export class LambdaStack extends Stack {
@@ -38,15 +38,30 @@ export class LambdaStack extends Stack {
 
     createLambda() {
         this.lambdaFunctions = this.props.functions.map((lambdaProps: LambdaProps) => {
+            const lambdaExecutionRole = new iam.Role(this, `${this.props.resourcesPrefix}${lambdaProps.name}LambdaFnExecRole`, {
+                roleName: `${this.props.resourcesPrefix}_${lambdaProps.name}-exec-role`,
+                assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+                managedPolicies: [
+                    iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+                ],
+            });
+            lambdaProps?.policySatements?.forEach((policySatement: iam.PolicyStatement) => {
+                lambdaExecutionRole.addToPolicy(policySatement);
+            })
+
             return new lambdaNodejs.NodejsFunction(this, `${this.props.resourcesPrefix}${lambdaProps.name}`, {
                 functionName: `${this.props.resourcesPrefix}-${lambdaProps.name}`,
                 runtime: lambda.Runtime.NODEJS_18_X,
+                role: lambdaExecutionRole,
                 timeout: Duration.seconds(60),
                 handler: 'main',
                 entry: lambdaProps.handlerPath,
                 memorySize: lambdaProps.memorySize,
                 layers: lambdaProps.layers,
-                bundling: lambdaProps.bundling
+                bundling: lambdaProps.bundling,
+                environment: {
+                    ...lambdaProps.environment
+                },
             });
         });
     }
